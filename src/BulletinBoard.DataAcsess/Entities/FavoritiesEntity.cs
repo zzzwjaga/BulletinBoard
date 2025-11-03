@@ -8,6 +8,6 @@ public class FavoritiesEntity : BaseEntity
 {
     public int UserId { get; set; }
     public int AdvertisementId { get; set; }
-    public AdvertisementEntity advertisement { get; set; }
-    public UserEntity user { get; set; }
+    public AdvertisementEntity Advertisement { get; set; }
+    public UserEntity User { get; set; }
 }

@@ -7,7 +7,7 @@ namespace BulletinBoard.DataAcsess.Entities;
 [Table("categories")]
 public class CategoryEntity : BaseEntity
 {
-    public string name { get; set; }
+    public string Name { get; set; }
     
-    public virtual ICollection<CategoryAdvertisementEntity>? advertisements { get; set; }
+    public virtual ICollection<CategoryAdvertisementEntity>? Advertisements { get; set; }
 }

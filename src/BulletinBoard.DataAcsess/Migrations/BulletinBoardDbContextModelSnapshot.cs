@@ -3,7 +3,6 @@ using System;
 using BulletinBoard.DataAcsess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BulletinBoard.DataAcsess.Migrations
 {
     [DbContext(typeof(BulletinBoardDbContext))]
-    [Migration("20251024171131_InitialCreate")]
-    partial class InitialCreate
+    partial class BulletinBoardDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,48 +21,6 @@ namespace BulletinBoard.DataAcsess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisememtPictureEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ExternalId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ModificationTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("advertisementId")
-                        .HasColumnType("integer");
-
-                    b.Property<byte[]>("content")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("fileExtension")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("fileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExternalId")
-                        .IsUnique();
-
-                    b.HasIndex("advertisementId");
-
-                    b.ToTable("advertisementPictures");
-                });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", b =>
                 {
@@ -75,37 +30,52 @@ namespace BulletinBoard.DataAcsess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("LocalityId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("address")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("localityId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("price")
+                    b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("userId")
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -113,11 +83,61 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.HasIndex("ExternalId")
                         .IsUnique();
 
-                    b.HasIndex("localityId");
+                    b.HasIndex("LocalityId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("advertisement");
+                    b.ToTable("advertisement", t =>
+                        {
+                            t.HasCheckConstraint("CK_Advertisement_Price", "\"Price\" >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisementPictureEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdvertisementId")
+                        .HasColumnType("integer");
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ExternalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("ModificationTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdvertisementId");
+
+                    b.HasIndex("ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("FileName")
+                        .IsUnique();
+
+                    b.ToTable("advertisementPictures");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.CategoryAdvertisementEntity", b =>
@@ -128,6 +148,12 @@ namespace BulletinBoard.DataAcsess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdvertisementId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -137,17 +163,11 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("advertisementId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("categoryId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("advertisementId");
+                    b.HasIndex("AdvertisementId");
 
-                    b.HasIndex("categoryId", "advertisementId")
+                    b.HasIndex("CategoryId", "AdvertisementId")
                         .IsUnique();
 
                     b.ToTable("categoriesOfAdvertisements");
@@ -170,11 +190,18 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("categories");
                 });
@@ -226,14 +253,18 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("LocalityName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("localityName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ExternalId")
+                        .IsUnique();
 
                     b.ToTable("localities");
                 });
@@ -249,32 +280,50 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("RegistredAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
-                    b.Property<string>("email")
+                    b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("phoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("registredAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("username")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("users");
                 });
@@ -287,26 +336,29 @@ namespace BulletinBoard.DataAcsess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("ActionDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<string>("ActionDescription")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ModeratorId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("actionDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("actionDescription")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("moderatorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -314,128 +366,128 @@ namespace BulletinBoard.DataAcsess.Migrations
                     b.HasIndex("ExternalId")
                         .IsUnique();
 
-                    b.HasIndex("moderatorId");
+                    b.HasIndex("ModeratorId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("userMetadatas");
                 });
 
-            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisememtPictureEntity", b =>
-                {
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "advertisement")
-                        .WithMany("pictures")
-                        .HasForeignKey("advertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("advertisement");
-                });
-
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", b =>
                 {
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.LocalityEntity", "locality")
-                        .WithMany("advertisements")
-                        .HasForeignKey("localityId")
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.LocalityEntity", "Locality")
+                        .WithMany("Advertisements")
+                        .HasForeignKey("LocalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "user")
-                        .WithMany("advertisements")
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("locality");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.CategoryAdvertisementEntity", b =>
-                {
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "advertisement")
-                        .WithMany("categories")
-                        .HasForeignKey("advertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.CategoryEntity", "category")
-                        .WithMany("advertisements")
-                        .HasForeignKey("categoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("advertisement");
-
-                    b.Navigation("category");
-                });
-
-            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.FavoritiesEntity", b =>
-                {
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "advertisement")
-                        .WithMany("users")
-                        .HasForeignKey("AdvertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "user")
-                        .WithMany("favorities")
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "User")
+                        .WithMany("Advertisements")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("advertisement");
+                    b.Navigation("Locality");
 
-                    b.Navigation("user");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisementPictureEntity", b =>
+                {
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "Advertisement")
+                        .WithMany("Pictures")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advertisement");
+                });
+
+            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.CategoryAdvertisementEntity", b =>
+                {
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "Advertisement")
+                        .WithMany("Categories")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.CategoryEntity", "CategoryEntity")
+                        .WithMany("Advertisements")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advertisement");
+
+                    b.Navigation("CategoryEntity");
+                });
+
+            modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.FavoritiesEntity", b =>
+                {
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", "Advertisement")
+                        .WithMany("Users")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "User")
+                        .WithMany("Favorities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advertisement");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.UserMetaDataEntity", b =>
                 {
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "moderator")
-                        .WithMany("moderatorAction")
-                        .HasForeignKey("moderatorId")
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "Moderator")
+                        .WithMany("ModeratorActions")
+                        .HasForeignKey("ModeratorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "user")
-                        .WithMany("metaDatas")
-                        .HasForeignKey("userId")
+                    b.HasOne("BulletinBoard.DataAcsess.Entities.UserEntity", "User")
+                        .WithMany("MetaDatas")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("moderator");
+                    b.Navigation("Moderator");
 
-                    b.Navigation("user");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.AdvertisementEntity", b =>
                 {
-                    b.Navigation("categories");
+                    b.Navigation("Categories");
 
-                    b.Navigation("pictures");
+                    b.Navigation("Pictures");
 
-                    b.Navigation("users");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.CategoryEntity", b =>
                 {
-                    b.Navigation("advertisements");
+                    b.Navigation("Advertisements");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.LocalityEntity", b =>
                 {
-                    b.Navigation("advertisements");
+                    b.Navigation("Advertisements");
                 });
 
             modelBuilder.Entity("BulletinBoard.DataAcsess.Entities.UserEntity", b =>
                 {
-                    b.Navigation("advertisements");
+                    b.Navigation("Advertisements");
 
-                    b.Navigation("favorities");
+                    b.Navigation("Favorities");
 
-                    b.Navigation("metaDatas");
+                    b.Navigation("MetaDatas");
 
-                    b.Navigation("moderatorAction");
+                    b.Navigation("ModeratorActions");
                 });
 #pragma warning restore 612, 618
         }

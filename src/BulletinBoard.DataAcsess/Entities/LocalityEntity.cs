@@ -6,7 +6,7 @@ namespace BulletinBoard.DataAcsess.Entities;
 [Table("localities")]
 public class LocalityEntity : BaseEntity
 {
-    public string localityName { get; set; }
+    public string LocalityName { get; set; }
     
-    public virtual ICollection<AdvertisementEntity> advertisements { get; set; }
+    public virtual ICollection<AdvertisementEntity> Advertisements { get; set; }
 }

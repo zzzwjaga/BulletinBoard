@@ -5,8 +5,8 @@ namespace BulletinBoard.DataAcsess.Entities;
 [Table("categoriesOfAdvertisements")]
 public class CategoryAdvertisementEntity : BaseEntity
 {
-    public int categoryId { get; set; }
-    public CategoryEntity category { get; set; }
-    public int advertisementId { get; set; }
-    public AdvertisementEntity advertisement { get; set; }
+    public int CategoryId { get; set; }
+    public CategoryEntity CategoryEntity { get; set; }
+    public int AdvertisementId { get; set; }
+    public AdvertisementEntity Advertisement { get; set; }
 }

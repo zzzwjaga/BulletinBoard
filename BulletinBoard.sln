@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.Service", "BulletinBoard.Service\BulletinBoard.Service.csproj", "{0AD14FB7-D575-4AC6-9ECC-333FEB1C0B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.Service", "src\BulletinBoard.Service\BulletinBoard.Service.csproj", "{0AD14FB7-D575-4AC6-9ECC-333FEB1C0B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.DataAcsess", "BulletinBoard.DataAcsess\BulletinBoard.DataAcsess.csproj", "{6416E74F-3351-428A-8487-26D6DC246929}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.DataAcsess", "src\BulletinBoard.DataAcsess\BulletinBoard.DataAcsess.csproj", "{6416E74F-3351-428A-8487-26D6DC246929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.BL", "BulletinBoard.BL\BulletinBoard.BL.csproj", "{BAD3498A-BF98-43A7-B845-D93537B36368}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletinBoard.BL", "src\BulletinBoard.BL\BulletinBoard.BL.csproj", "{BAD3498A-BF98-43A7-B845-D93537B36368}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

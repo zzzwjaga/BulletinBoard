@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BulletinBoard.DataAcsess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -34,7 +34,7 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    localityName = table.Column<string>(type: "text", nullable: false),
+                    LocalityName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -50,11 +50,11 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    username = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    phoneNumber = table.Column<string>(type: "text", nullable: false),
-                    registredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    RegistredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    Role = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -70,13 +70,15 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    address = table.Column<string>(type: "text", nullable: false),
-                    localityId = table.Column<int>(type: "integer", nullable: false),
-                    userId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    Address = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    LocalityId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -84,15 +86,16 @@ namespace BulletinBoard.DataAcsess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_advertisement", x => x.Id);
+                    table.CheckConstraint("CK_Advertisement_Price", "\"Price\" >= 0");
                     table.ForeignKey(
-                        name: "FK_advertisement_localities_localityId",
-                        column: x => x.localityId,
+                        name: "FK_advertisement_localities_LocalityId",
+                        column: x => x.LocalityId,
                         principalTable: "localities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_advertisement_users_userId",
-                        column: x => x.userId,
+                        name: "FK_advertisement_users_UserId",
+                        column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -104,10 +107,10 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    actionDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    actionDescription = table.Column<string>(type: "text", nullable: false),
-                    moderatorId = table.Column<int>(type: "integer", nullable: false),
-                    userId = table.Column<int>(type: "integer", nullable: false),
+                    ActionDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    ActionDescription = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ModeratorId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -116,14 +119,14 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     table.PrimaryKey("PK_userMetadatas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_userMetadatas_users_moderatorId",
-                        column: x => x.moderatorId,
+                        name: "FK_userMetadatas_users_ModeratorId",
+                        column: x => x.ModeratorId,
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_userMetadatas_users_userId",
-                        column: x => x.userId,
+                        name: "FK_userMetadatas_users_UserId",
+                        column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -135,10 +138,10 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    fileExtension = table.Column<string>(type: "text", nullable: false),
-                    fileName = table.Column<string>(type: "text", nullable: false),
-                    content = table.Column<byte[]>(type: "bytea", nullable: false),
-                    advertisementId = table.Column<int>(type: "integer", nullable: false),
+                    FileExtension = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FileName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Content = table.Column<byte[]>(type: "bytea", nullable: false),
+                    AdvertisementId = table.Column<int>(type: "integer", nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -147,8 +150,8 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     table.PrimaryKey("PK_advertisementPictures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_advertisementPictures_advertisement_advertisementId",
-                        column: x => x.advertisementId,
+                        name: "FK_advertisementPictures_advertisement_AdvertisementId",
+                        column: x => x.AdvertisementId,
                         principalTable: "advertisement",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -160,8 +163,8 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    categoryId = table.Column<int>(type: "integer", nullable: false),
-                    advertisementId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    AdvertisementId = table.Column<int>(type: "integer", nullable: false),
                     ExternalId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -170,14 +173,14 @@ namespace BulletinBoard.DataAcsess.Migrations
                 {
                     table.PrimaryKey("PK_categoriesOfAdvertisements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_categoriesOfAdvertisements_advertisement_advertisementId",
-                        column: x => x.advertisementId,
+                        name: "FK_categoriesOfAdvertisements_advertisement_AdvertisementId",
+                        column: x => x.AdvertisementId,
                         principalTable: "advertisement",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_categoriesOfAdvertisements_categories_categoryId",
-                        column: x => x.categoryId,
+                        name: "FK_categoriesOfAdvertisements_categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -219,19 +222,19 @@ namespace BulletinBoard.DataAcsess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_advertisement_localityId",
+                name: "IX_advertisement_LocalityId",
                 table: "advertisement",
-                column: "localityId");
+                column: "LocalityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_advertisement_userId",
+                name: "IX_advertisement_UserId",
                 table: "advertisement",
-                column: "userId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_advertisementPictures_advertisementId",
+                name: "IX_advertisementPictures_AdvertisementId",
                 table: "advertisementPictures",
-                column: "advertisementId");
+                column: "AdvertisementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_advertisementPictures_ExternalId",
@@ -240,14 +243,32 @@ namespace BulletinBoard.DataAcsess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_categoriesOfAdvertisements_advertisementId",
-                table: "categoriesOfAdvertisements",
-                column: "advertisementId");
+                name: "IX_advertisementPictures_FileName",
+                table: "advertisementPictures",
+                column: "FileName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_categoriesOfAdvertisements_categoryId_advertisementId",
+                name: "IX_categories_ExternalId",
+                table: "categories",
+                column: "ExternalId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_categories_Name",
+                table: "categories",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_categoriesOfAdvertisements_AdvertisementId",
                 table: "categoriesOfAdvertisements",
-                columns: new[] { "categoryId", "advertisementId" },
+                column: "AdvertisementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_categoriesOfAdvertisements_CategoryId_AdvertisementId",
+                table: "categoriesOfAdvertisements",
+                columns: new[] { "CategoryId", "AdvertisementId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -262,20 +283,50 @@ namespace BulletinBoard.DataAcsess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_localities_ExternalId",
+                table: "localities",
+                column: "ExternalId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_userMetadatas_ExternalId",
                 table: "userMetadatas",
                 column: "ExternalId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_userMetadatas_moderatorId",
+                name: "IX_userMetadatas_ModeratorId",
                 table: "userMetadatas",
-                column: "moderatorId");
+                column: "ModeratorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_userMetadatas_userId",
+                name: "IX_userMetadatas_UserId",
                 table: "userMetadatas",
-                column: "userId");
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_Email",
+                table: "users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_ExternalId",
+                table: "users",
+                column: "ExternalId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_PhoneNumber",
+                table: "users",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_Username",
+                table: "users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
